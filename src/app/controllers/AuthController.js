@@ -20,8 +20,6 @@ class AuthController {
 
     const { id, name } = user;
 
-    console.log(authConfig.secret);
-
     return res.json({
       user: {
         id,
