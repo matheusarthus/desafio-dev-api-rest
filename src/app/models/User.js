@@ -1,4 +1,5 @@
 const { uuid } = require('uuidv4');
+const bcrypt = require('bcryptjs');
 const { Sequelize, Model } = require('sequelize');
 
 class User extends Model {
@@ -8,6 +9,7 @@ class User extends Model {
         name: Sequelize.STRING,
         cpf: Sequelize.STRING,
         birth_date: Sequelize.DATE,
+        password: Sequelize.VIRTUAL,
         password_hash: Sequelize.STRING,
       },
       {
@@ -17,6 +19,12 @@ class User extends Model {
 
     this.addHook('beforeSave', async (user) => {
       user.id = uuid();
+    });
+
+    this.addHook('beforeSave', async (user) => {
+      if (user.password) {
+        user.password_hash = await bcrypt.hash(user.password, 8);
+      }
     });
 
     return this;
