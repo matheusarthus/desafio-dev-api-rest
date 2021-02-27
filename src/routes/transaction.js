@@ -32,15 +32,18 @@ function depositTransaction(controller) {
 
 function withdrawTransaction(controller) {
   return async (req, res) => {
-    logger.info('updateUser');
+    logger.info('withdrawTransaction');
     try {
-      const user = await controller.update({ userId: req.userId, ...req.body });
+      const transaction = await controller.withdraw({
+        accountId: req.params.accountId,
+        ...req.body,
+      });
 
-      if (user) {
-        return res.status(201).json(user);
+      if (transaction) {
+        return res.status(201).json(transaction);
       }
 
-      return res.status(500).json({ error: 'Could not update user profile' });
+      return res.status(500).json({ error: 'Withdraw failed.' });
     } catch (error) {
       return handleError(res)(error);
     }
@@ -49,15 +52,16 @@ function withdrawTransaction(controller) {
 
 function transferTransaction(controller) {
   return async (req, res) => {
-    logger.info('updateUser');
+    logger.info('transferTransaction');
+    console.log(req.body);
     try {
-      const user = await controller.update({ userId: req.userId, ...req.body });
+      const transaction = await controller.transfer(req.body);
 
-      if (user) {
-        return res.status(201).json(user);
+      if (transaction) {
+        return res.status(201).json(transaction);
       }
 
-      return res.status(500).json({ error: 'Could not update user profile' });
+      return res.status(500).json({ error: 'Transfer failed.' });
     } catch (error) {
       return handleError(res)(error);
     }
@@ -81,16 +85,11 @@ module.exports = (options) => {
     '/transactions/:accountId/deposit',
     depositTransaction(controller)
   );
-  /*   router.post(
-    '/transactions/:userId/withdraw',
-    createUserValidation,
+  router.post(
+    '/transactions/:accountId/withdraw',
     withdrawTransaction(controller)
   );
-  router.post(
-    '/transactions/transfer',
-    createUserValidation,
-    transferTransaction(controller)
-  ); */
+  router.post('/transactions/transfer', transferTransaction(controller));
 
   return router;
 };
