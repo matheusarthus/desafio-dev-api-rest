@@ -29,7 +29,6 @@ module.exports = {
         references: { model: 'transfers', key: 'id' },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
-        allowNull: false,
       },
       created_at: {
         type: Sequelize.DATE,

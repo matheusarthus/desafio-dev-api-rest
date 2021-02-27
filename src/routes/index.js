@@ -5,6 +5,8 @@ const transactionRoutes = require('./transaction');
 
 const authMiddleware = require('../app/middlewares/auth');
 
+const database = require('../database');
+
 const UserModel = require('../app/models/User');
 const AccountModel = require('../app/models/Account');
 const AccountTypesModel = require('../app/models/AccountTypes');
@@ -19,8 +21,9 @@ const accountController = require('../app/controllers/AccountController')(
   AccountModel,
   AccountTypesModel
 );
-const transactionController = require('../app/controllers/AuthController')(
-  UserModel,
+const transactionController = require('../app/controllers/TransactionController')(
+  database.connection,
+  AccountModel,
   TransactionModel,
   TransactionTypes,
   TransferModel

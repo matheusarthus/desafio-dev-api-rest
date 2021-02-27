@@ -21,11 +21,11 @@ class Transfer extends Model {
   }
 
   static associate(models) {
-    this.hasOne(models.Account, {
+    this.belongsTo(models.Account, {
       foreignKey: 'account_id_from',
       as: 'account_from',
     });
-    this.hasOne(models.Account, {
+    this.belongsTo(models.Account, {
       foreignKey: 'account_id_to',
       as: 'account_to',
     });

@@ -5,8 +5,8 @@ const chalk = require('chalk');
 
 const logger = log4js.getLogger('[Start up script]');
 
-const http = require('http');
 const express = require('express');
+const http = require('http');
 const configureExpressApp = require('./app');
 
 const app = express();

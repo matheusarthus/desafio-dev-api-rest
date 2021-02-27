@@ -1,64 +1,43 @@
 const boom = require('boom');
 
 module.exports = (
-  UserModel,
+  connection,
+  AccountModel,
   TransactionModel,
   TransactionTypes,
   TransferModel
 ) => ({
-  show: async (accountId) => {
-    const account = await AccountModel.findByPk(accountId, {
-      include: [
-        {
-          model: UserModel,
-          as: 'user',
-          attributes: ['id', 'name', 'cpf'],
-        },
-        {
-          model: AccountTypesModel,
-          as: 'accountType',
-          attributes: ['type'],
-        },
-      ],
-    });
+  deposit: async ({ accountId, value }) => {
+    const account = await AccountModel.findByPk(accountId);
 
     if (!account) {
       throw boom.badRequest('Account does not exist.');
     }
 
-    return account;
-  },
-  store: async (data) => {
-    const userExists = await UserModel.findByPk(data.user_id, {
-      include: [
+    const newBalance = Number(account.balance) + Number(value);
+
+    account.balance = newBalance;
+
+    const t = await connection.transaction();
+
+    try {
+      await account.save({ transaction: t });
+
+      const transaction = await TransactionModel.create(
         {
-          model: AccountModel,
-          as: 'account',
+          account_id: account.id,
+          value,
+          transaction_type_id: 1,
         },
-      ],
-    });
+        { transaction: t }
+      );
 
-    if (!userExists) {
-      throw boom.badRequest('User does not exist.');
+      await t.commit();
+
+      return transaction;
+    } catch (err) {
+      await t.rollback();
+      throw err;
     }
-
-    if (userExists.account) {
-      throw boom.badRequest('User has already an account.');
-    }
-
-    const account = await AccountModel.create(data);
-
-    return account;
-  },
-  update: async (data) => {
-    const account = await AccountModel.findByPk(data.accountId);
-
-    if (!account) {
-      throw boom.badRequest('Account does not exist.');
-    }
-
-    await account.update(data);
-
-    return account;
   },
 });

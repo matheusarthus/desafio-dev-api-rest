@@ -3,8 +3,6 @@ const { errors } = require('celebrate');
 const log4js = require('log4js');
 const setupRoutes = require('./routes');
 
-require('./database');
-
 const logger = log4js.getLogger('[App]');
 
 module.exports = function configureExpressApp(app) {

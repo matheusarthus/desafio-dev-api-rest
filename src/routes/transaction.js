@@ -12,15 +12,18 @@ const {
 
 function depositTransaction(controller) {
   return async (req, res) => {
-    logger.info('createUser');
+    logger.info('depositTransaction');
     try {
-      const user = await controller.store(req.body);
+      const transaction = await controller.deposit({
+        accountId: req.params.accountId,
+        ...req.body,
+      });
 
-      if (user) {
-        return res.status(201).json(user);
+      if (transaction) {
+        return res.status(201).json(transaction);
       }
 
-      return res.status(500).json({ error: 'Could not create user profile' });
+      return res.status(500).json({ error: 'Deposit failed.' });
     } catch (error) {
       return handleError(res)(error);
     }
@@ -74,7 +77,10 @@ module.exports = (options) => {
 
   const router = Router();
 
-  router.post('/transactions/:userId/deposit', depositTransaction(controller));
+  router.post(
+    '/transactions/:accountId/deposit',
+    depositTransaction(controller)
+  );
   /*   router.post(
     '/transactions/:userId/withdraw',
     createUserValidation,
