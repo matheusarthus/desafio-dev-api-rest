@@ -4,6 +4,7 @@ const { Router } = require('express');
 const logger = log4js.getLogger('[Users Router]');
 
 const { handleError } = require('../utils/responseHandler');
+const { createUserValidation } = require('./validations/user');
 
 function createUser(controller) {
   return async (req, res) => {
@@ -35,7 +36,7 @@ module.exports = (options) => {
 
   const router = Router();
 
-  router.post('/users', createUser(controller));
+  router.post('/users', createUserValidation, createUser(controller));
 
   return router;
 };

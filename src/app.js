@@ -1,4 +1,5 @@
 const bodyParser = require('body-parser');
+const { errors } = require('celebrate');
 const log4js = require('log4js');
 const setupRoutes = require('./routes');
 
@@ -11,6 +12,8 @@ module.exports = function configureExpressApp(app) {
 
   app.use(bodyParser.json());
   setupRoutes(app);
+
+  app.use(errors());
 
   return app;
 };

@@ -19,7 +19,6 @@ function createAuth(controller) {
         .status(500)
         .json({ error: 'Could not create user authentication' });
     } catch (error) {
-      console.log('BATATA');
       return handleError(res)(error);
     }
   };
