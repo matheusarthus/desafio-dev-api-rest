@@ -1,26 +1,24 @@
 const jwt = require('jsonwebtoken');
+const boom = require('boom');
 const authConfig = require('../../config/auth');
-const User = require('../models/User');
 
-class AuthController {
-  async store(req, res) {
-    const { cpf, password } = req.body;
-
-    const user = await User.findOne({
+module.exports = (UserModel) => ({
+  store: async ({ cpf, password }) => {
+    const user = await UserModel.findOne({
       where: { cpf },
     });
 
     if (!user) {
-      return res.status(401).json({ error: 'User not found' });
+      throw boom.badRequest('User not found');
     }
 
     if (!(await user.checkPassword(password))) {
-      return res.status(401).json({ error: 'Password does not match' });
+      throw boom.badRequest('Password does not match');
     }
 
     const { id, name } = user;
 
-    return res.json({
+    return {
       user: {
         id,
         name,
@@ -28,8 +26,6 @@ class AuthController {
       token: jwt.sign({ id }, authConfig.secret, {
         expiresIn: authConfig.expiresIn,
       }),
-    });
-  }
-}
-
-module.exports = new AuthController();
+    };
+  },
+});
