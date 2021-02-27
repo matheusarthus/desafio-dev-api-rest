@@ -1,17 +1,13 @@
-const User = require('../models/User');
-
-class UserController {
-  async store(req, res) {
-    const userExists = await User.findOne({ where: { cpf: req.body.cpf } });
+module.exports = (UserModel) => ({
+  store: async (user) => {
+    const userExists = await UserModel.findOne({ where: { cpf: user.cpf } });
 
     if (userExists) {
-      return res.status(400).json({ error: 'User already exists.' });
+      throw new Error('User already exists.');
     }
 
-    const { id, name } = await User.create(req.body);
+    const newUser = await UserModel.create(user);
 
-    return res.json({ id, name });
-  }
-}
-
-module.exports = new UserController();
+    return newUser;
+  },
+});

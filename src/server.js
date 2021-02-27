@@ -1,3 +1,10 @@
-const App = require('./app');
+const http = require('http');
+const express = require('express');
+const configureExpressApp = require('./app');
 
-App.listen(3333);
+const app = express();
+const server = http.createServer(app);
+
+configureExpressApp(app);
+
+server.listen(3333);

@@ -1,23 +1,11 @@
-const express = require('express');
-const routes = require('./routes');
+const bodyParser = require('body-parser');
+const setupRoutes = require('./routes');
 
 require('./database');
 
-class App {
-  constructor() {
-    this.server = express();
+module.exports = function configureExpressApp(app) {
+  app.use(bodyParser.json());
+  setupRoutes(app);
 
-    this.middlewares();
-    this.routes();
-  }
-
-  middlewares() {
-    this.server.use(express.json());
-  }
-
-  routes() {
-    this.server.use(routes);
-  }
-}
-
-module.exports = new App().server;
+  return app;
+};
