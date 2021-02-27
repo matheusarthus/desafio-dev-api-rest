@@ -30,6 +30,10 @@ class User extends Model {
     return this;
   }
 
+  static associate(models) {
+    this.hasOne(models.Account, { foreignKey: 'user_id', as: 'account' });
+  }
+
   checkPassword(password) {
     return bcrypt.compare(password, this.password_hash);
   }
