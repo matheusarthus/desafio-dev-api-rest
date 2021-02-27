@@ -24,7 +24,7 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         defaultValue: false,
       },
-      account_type: {
+      account_type_id: {
         type: Sequelize.INTEGER,
         references: { model: 'account_types', key: 'id' },
         onUpdate: 'CASCADE',
