@@ -1,7 +1,7 @@
 const log4js = require('log4js');
 const { Router } = require('express');
 
-const logger = log4js.getLogger('[Users Router]');
+const logger = log4js.getLogger('[Auth Router]');
 
 const { handleError } = require('../utils/responseHandler');
 

@@ -40,27 +40,15 @@ module.exports = (UserModel, AccountModel) => ({
 
     return account;
   },
-  /* update: async (data) => {
-    const user = await UserModel.findByPk(data.userId);
+  update: async (data) => {
+    const account = await AccountModel.findByPk(data.accountId);
 
-    if (data.cpf && data.cpf !== user.cpf) {
-      const userExists = await UserModel.findOne({ where: { cpf: data.cpf } });
-
-      if (userExists) {
-        throw boom.badRequest('User already exists.');
-      }
+    if (!account) {
+      throw boom.badRequest('Account does not exist.');
     }
 
-    if (data.oldPassword && !(await user.checkPassword(data.oldPassword))) {
-      throw boom.unauthorized('Password dos not match.');
-    }
+    await account.update(data);
 
-    await user.update(data);
-
-    return {
-      id: user.id,
-      name: user.name,
-      cpf: user.cpf,
-    };
-  }, */
+    return account;
+  },
 });

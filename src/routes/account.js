@@ -1,12 +1,12 @@
 const log4js = require('log4js');
 const { Router } = require('express');
 
-const logger = log4js.getLogger('[Users Router]');
+const logger = log4js.getLogger('[Accounts Router]');
 
 const { handleError } = require('../utils/responseHandler');
 const {
   createAccountValidation,
-  updateUserValidation,
+  updateAccountValidation,
 } = require('./validations/account');
 
 function getAccount(controller) {
@@ -52,15 +52,20 @@ function createAccount(controller) {
 
 function updateAccount(controller) {
   return async (req, res) => {
-    logger.info('updateUser');
+    logger.info('updateAccount');
     try {
-      const user = await controller.update({ userId: req.userId, ...req.body });
+      const account = await controller.update({
+        accountId: req.params.id,
+        ...req.body,
+      });
 
-      if (user) {
-        return res.status(201).json(user);
+      if (account) {
+        return res.status(201).json(account);
       }
 
-      return res.status(500).json({ error: 'Could not update user profile' });
+      return res
+        .status(500)
+        .json({ error: 'Could not update the account for this id.' });
     } catch (error) {
       return handleError(res)(error);
     }
@@ -86,12 +91,11 @@ module.exports = (options) => {
     createAccountValidation,
     createAccount(controller)
   );
-  /*   router.put(
-    '/users',
-    authMiddleware,
-    updateUserValidation,
-    updateUser(controller)
-  ); */
+  router.put(
+    '/accounts/:id',
+    updateAccountValidation,
+    updateAccount(controller)
+  );
 
   return router;
 };
