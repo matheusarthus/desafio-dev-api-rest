@@ -1,4 +1,4 @@
-const { uuid } = require('uuidv4');
+const { v4 } = require('uuid');
 const bcrypt = require('bcryptjs');
 const { Sequelize, Model } = require('sequelize');
 
@@ -18,7 +18,7 @@ class User extends Model {
     );
 
     this.addHook('beforeSave', async (user) => {
-      user.id = uuid();
+      user.id = v4();
     });
 
     this.addHook('beforeSave', async (user) => {

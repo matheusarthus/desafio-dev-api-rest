@@ -8,8 +8,31 @@ module.exports = (UserModel) => ({
       throw boom.badRequest('User already exists.');
     }
 
-    const newUser = await UserModel.create(user);
+    const { id, name, cpf } = await UserModel.create(user);
 
-    return newUser;
+    return { id, name, cpf };
+  },
+  update: async (data) => {
+    const user = await UserModel.findByPk(data.userId);
+
+    if (data.cpf && data.cpf !== user.cpf) {
+      const userExists = await UserModel.findOne({ where: { cpf: data.cpf } });
+
+      if (userExists) {
+        throw boom.badRequest('User already exists.');
+      }
+    }
+
+    if (data.oldPassword && !(await user.checkPassword(data.oldPassword))) {
+      throw boom.unauthorized('Password dos not match.');
+    }
+
+    await user.update(data);
+
+    return {
+      id: user.id,
+      name: user.name,
+      cpf: user.cpf,
+    };
   },
 });
