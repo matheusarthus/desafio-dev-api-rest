@@ -7,13 +7,15 @@ const authMiddleware = require('../app/middlewares/auth');
 
 const UserModel = require('../app/models/User');
 const AccountModel = require('../app/models/Account');
+const AccountTypesModel = require('../app/models/AccountTypes');
 // const TransactionModel = require('../app/models/Transaction');
 
 const userController = require('../app/controllers/UserController')(UserModel);
 const authController = require('../app/controllers/AuthController')(UserModel);
 const accountController = require('../app/controllers/AccountController')(
   UserModel,
-  AccountModel
+  AccountModel,
+  AccountTypesModel
 );
 // const transactionController = require('../app/controllers/AuthController')(UserModel);
 

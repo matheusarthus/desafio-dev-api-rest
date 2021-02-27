@@ -27,7 +27,7 @@ class Account extends Model {
     this.belongsTo(models.User, { foreignKey: 'user_id', as: 'user' });
     this.belongsTo(models.AccountTypes, {
       foreignKey: 'account_type_id',
-      as: 'account_type',
+      as: 'accountType',
     });
   }
 }

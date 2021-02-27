@@ -1,6 +1,6 @@
 const boom = require('boom');
 
-module.exports = (UserModel, AccountModel) => ({
+module.exports = (UserModel, AccountModel, AccountTypesModel) => ({
   show: async (accountId) => {
     const account = await AccountModel.findByPk(accountId, {
       include: [
@@ -8,6 +8,11 @@ module.exports = (UserModel, AccountModel) => ({
           model: UserModel,
           as: 'user',
           attributes: ['id', 'name', 'cpf'],
+        },
+        {
+          model: AccountTypesModel,
+          as: 'accountType',
+          attributes: ['type'],
         },
       ],
     });
