@@ -1,6 +1,23 @@
 const boom = require('boom');
 
 module.exports = (UserModel, AccountModel) => ({
+  show: async (accountId) => {
+    const account = await AccountModel.findByPk(accountId, {
+      include: [
+        {
+          model: UserModel,
+          as: 'user',
+          attributes: ['id', 'name', 'cpf'],
+        },
+      ],
+    });
+
+    if (!account) {
+      throw boom.badRequest('Account does not exist.');
+    }
+
+    return account;
+  },
   store: async (data) => {
     const userExists = await UserModel.findByPk(data.user_id, {
       include: [

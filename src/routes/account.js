@@ -9,6 +9,25 @@ const {
   updateUserValidation,
 } = require('./validations/account');
 
+function getAccount(controller) {
+  return async (req, res) => {
+    logger.info('getAccount');
+    try {
+      const account = await controller.show(req.params.id);
+
+      if (account) {
+        return res.status(201).json(account);
+      }
+
+      return res
+        .status(500)
+        .json({ error: 'Could not get an account for this id.' });
+    } catch (error) {
+      return handleError(res)(error);
+    }
+  };
+}
+
 function createAccount(controller) {
   return async (req, res) => {
     logger.info('createAccount');
@@ -61,6 +80,7 @@ module.exports = (options) => {
 
   const router = Router();
 
+  router.get('/accounts/:id', getAccount(controller));
   router.post(
     '/accounts/:userId',
     createAccountValidation,
