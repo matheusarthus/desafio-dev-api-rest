@@ -24,6 +24,13 @@ module.exports = {
         onDelete: 'SET NULL',
         allowNull: false,
       },
+      transfer_id: {
+        type: Sequelize.UUID,
+        references: { model: 'transfers', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
+        allowNull: false,
+      },
       created_at: {
         type: Sequelize.DATE,
         allowNull: false,
