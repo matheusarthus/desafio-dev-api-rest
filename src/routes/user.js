@@ -3,6 +3,8 @@ const { Router } = require('express');
 
 const logger = log4js.getLogger('[Users Router]');
 
+const { handleError } = require('../utils/responseHandler');
+
 function createUser(controller) {
   return async (req, res) => {
     logger.info('createUser');
@@ -15,7 +17,6 @@ function createUser(controller) {
 
       return res.status(500).json({ error: 'Could not create user profile' });
     } catch (error) {
-      return res.status(400).json({ error: 'User already exists.' });
       return handleError(res)(error);
     }
   };
