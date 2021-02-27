@@ -6,7 +6,10 @@ const authMiddleware = require('../app/middlewares/auth');
 const logger = log4js.getLogger('[Users Router]');
 
 const { handleError } = require('../utils/responseHandler');
-const { createUserValidation } = require('./validations/user');
+const {
+  createUserValidation,
+  updateUserValidation,
+} = require('./validations/user');
 
 function createUser(controller) {
   return async (req, res) => {
@@ -56,7 +59,12 @@ module.exports = (options) => {
   const router = Router();
 
   router.post('/users', createUserValidation, createUser(controller));
-  router.put('/users', authMiddleware, updateUser(controller));
+  router.put(
+    '/users',
+    authMiddleware,
+    updateUserValidation,
+    updateUser(controller)
+  );
 
   return router;
 };
