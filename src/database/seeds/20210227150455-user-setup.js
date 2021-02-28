@@ -1,11 +1,10 @@
 const bcrypt = require('bcryptjs');
-const { v4 } = require('uuid');
 
 module.exports = {
   up: async (queryInterface) =>
     queryInterface.bulkInsert('users', [
       {
-        id: v4(),
+        id: 'f109c358-8d48-4a6e-8696-a4b9f6b424cd',
         name: 'João Alves',
         cpf: '99999999999',
         birth_date: '1998-04-01 00:00:00.000+00',
