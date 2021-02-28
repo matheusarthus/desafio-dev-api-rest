@@ -12,6 +12,15 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date(),
       },
+      {
+        id: 'a4320b65-34f8-41ca-8220-aecce46ede77',
+        name: 'Teste',
+        cpf: '00000000000',
+        birth_date: '1989-01-01 00:00:00.000+00',
+        password_hash: await bcrypt.hash('teste', 8),
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
     ]),
 
   down: (queryInterface) => queryInterface.bulkDelete('users', null, {}),

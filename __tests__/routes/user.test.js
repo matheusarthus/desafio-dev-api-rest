@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken');
 
 const authConfig = require('../../src/config/auth');
 
+require('../../src/database');
+
 const { generateMockApp } = require('../../src/utils/mockapp');
 
 const UserModel = require('../../src/app/models/User');
@@ -16,12 +18,12 @@ const userRoutes = require('../../src/routes/user');
 describe('User routes', () => {
   let app;
   const auth = {};
-  const id = 'f109c358-8d48-4a6e-8696-a4b9f6b424cd';
+  const userId = 'f109c358-8d48-4a6e-8696-a4b9f6b424cd'; // User João Alves
 
   beforeAll(() => {
     app = generateMockApp(userRoutes({ controller: userController }));
 
-    auth.token = jwt.sign({ id }, authConfig.secret, {
+    auth.token = jwt.sign({ id: userId }, authConfig.secret, {
       expiresIn: authConfig.expiresIn,
     });
   });
