@@ -1,12 +1,94 @@
+const { Op } = require('sequelize');
 const boom = require('boom');
 
 module.exports = (
   connection,
+  UserModel,
   AccountModel,
   TransactionModel,
   TransactionTypes,
   TransferModel
 ) => ({
+  statement: async ({ accountId, startDate, endDate, filterType }) => {
+    const account = await AccountModel.findOne({
+      where: { id: accountId },
+      include: [
+        {
+          model: UserModel,
+          as: 'user',
+          attributes: ['name', 'cpf'],
+        },
+      ],
+    });
+
+    if (!account) {
+      throw boom.badRequest('Account does not exist.');
+    }
+
+    const filter = {
+      account_id: accountId,
+    };
+
+    if (filterType === 'period') {
+      filter.created_at = {
+        [Op.between]: [startDate, endDate],
+      };
+    }
+
+    const transactions = await TransactionModel.findAll({
+      where: filter,
+      order: ['created_at'],
+      include: [
+        {
+          model: TransactionTypes,
+          as: 'transactionType',
+          attributes: ['type'],
+        },
+        {
+          model: TransferModel,
+          as: 'transfer',
+          attributes: ['account_id_from', 'account_id_to'],
+          include: [
+            {
+              model: AccountModel,
+              as: 'account_from',
+              attributes: ['id'],
+              include: [
+                {
+                  model: UserModel,
+                  as: 'user',
+                  attributes: ['name', 'cpf'],
+                },
+              ],
+            },
+            {
+              model: AccountModel,
+              as: 'account_to',
+              attributes: ['id'],
+              include: [
+                {
+                  model: UserModel,
+                  as: 'user',
+                  attributes: ['name', 'cpf'],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    if (transactions && transactions.length <= 0) {
+      throw boom.badRequest('There are not transactions for this period.');
+    }
+
+    return {
+      account,
+      period: { start: startDate.toString(), end: endDate.toString() },
+      totalTransactions: transactions.length,
+      transactions,
+    };
+  },
   deposit: async ({ accountId, value }) => {
     const account = await AccountModel.findByPk(accountId);
 

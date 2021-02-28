@@ -10,6 +10,28 @@ const {
   transferTransactionValidation,
 } = require('./validations/transaction');
 
+function getStatement(controller) {
+  return async (req, res) => {
+    logger.info('getStatement');
+    try {
+      const statement = await controller.statement({
+        accountId: req.params.accountId,
+        filterType: req.query.filterType,
+        startDate: new Date(req.query.startDate),
+        endDate: new Date(req.query.endDate),
+      });
+
+      if (statement) {
+        return res.status(201).json(statement);
+      }
+
+      return res.status(500).json({ error: 'Statement failed.' });
+    } catch (error) {
+      return handleError(res)(error);
+    }
+  };
+}
+
 function depositTransaction(controller) {
   return async (req, res) => {
     logger.info('depositTransaction');
@@ -80,6 +102,7 @@ module.exports = (options) => {
 
   const router = Router();
 
+  router.get('/transactions/:accountId/statement', getStatement(controller));
   router.post(
     '/transactions/:accountId/deposit',
     depositTransactionValidation,

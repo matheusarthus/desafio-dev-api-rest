@@ -23,6 +23,7 @@ const accountController = require('../app/controllers/AccountController')(
 );
 const transactionController = require('../app/controllers/TransactionController')(
   database.connection,
+  UserModel,
   AccountModel,
   TransactionModel,
   TransactionTypes,
