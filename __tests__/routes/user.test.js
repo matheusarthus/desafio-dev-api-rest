@@ -16,17 +16,14 @@ const userRoutes = require('../../src/routes/user');
 describe('User routes', () => {
   let app;
   const auth = {};
+  const id = 'f109c358-8d48-4a6e-8696-a4b9f6b424cd';
 
   beforeAll(() => {
     app = generateMockApp(userRoutes({ controller: userController }));
 
-    auth.token = jwt.sign(
-      { id: 'f109c358-8d48-4a6e-8696-a4b9f6b424cd' },
-      authConfig.secret,
-      {
-        expiresIn: authConfig.expiresIn,
-      }
-    );
+    auth.token = jwt.sign({ id }, authConfig.secret, {
+      expiresIn: authConfig.expiresIn,
+    });
   });
 
   describe('Create a new user', () => {
