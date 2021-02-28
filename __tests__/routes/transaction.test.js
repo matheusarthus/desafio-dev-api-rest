@@ -53,4 +53,18 @@ describe('Transaction routes', () => {
           expect(response.body).toHaveProperty('id');
         }));
   });
+
+  describe('Create a new withdram transaction', () => {
+    it('should return a deposit transaction register', () =>
+      request(app)
+        .post(`/transactions/${accountId}/withdraw`)
+        .auth(auth.token, { type: 'bearer' })
+        .send({
+          value: '100.00',
+        })
+        .then((response) => {
+          expect(response.statusCode).toBe(201);
+          expect(response.body).toHaveProperty('id');
+        }));
+  });
 });
