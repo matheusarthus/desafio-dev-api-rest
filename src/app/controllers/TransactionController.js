@@ -78,8 +78,12 @@ module.exports = (
       ],
     });
 
-    if (transactions && transactions.length <= 0) {
-      throw boom.badRequest('There are not transactions for this period.');
+    if (transactions && transactions.length < 1) {
+      if (filterType === 'period') {
+        throw boom.badRequest('There are not transactions for this period.');
+      }
+
+      throw boom.badRequest('There are not transactions.');
     }
 
     return {

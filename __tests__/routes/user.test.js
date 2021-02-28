@@ -68,12 +68,12 @@ describe('User routes', () => {
         .auth(auth.token, { type: 'bearer' })
         .send({
           name: 'João Alves Souza',
-          cpf: '22222222222',
+          cpf: '77777777777',
         })
         .then((response) => {
           expect(response.statusCode).toBe(201);
           expect(response.body.name).toBe('João Alves Souza');
-          expect(response.body.cpf).toBe('22222222222');
+          expect(response.body.cpf).toBe('77777777777');
         }));
   });
 });

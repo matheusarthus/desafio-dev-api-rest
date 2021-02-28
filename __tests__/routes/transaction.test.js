@@ -27,24 +27,88 @@ const transactionRoutes = require('../../src/routes/transaction');
 describe('Transaction routes', () => {
   let app;
   const auth = {};
-  const userId = 'a4320b65-34f8-41ca-8220-aecce46ede77'; // User Teste
-  const userIdTo = 'f109c358-8d48-4a6e-8696-a4b9f6b424cd'; // User João Alves
-  const accountId = 'f44051b5-096a-45c4-9904-753da71cf71d'; // User Teste`s Account
+  let userTestIdFrom;
+  let accountIdFrom;
+  let userTestIdTo;
+  let accountIdTo;
 
-  beforeAll(() => {
+  beforeAll(async () => {
     app = generateMockApp(
       transactionRoutes({ controller: transactionController })
     );
+    const userTestFrom = await UserModel.create({
+      name: 'Teste1',
+      cpf: '55555555555',
+      birth_date: '1989-01-01 00:00:00.000+00',
+      password: 'teste123',
+    });
 
-    auth.token = jwt.sign({ id: userId }, authConfig.secret, {
+    userTestIdFrom = userTestFrom.id;
+
+    const accountFrom = await AccountModel.create({
+      user_id: userTestIdFrom,
+      balance: '300.00',
+      daily_withdraw_limit: '500.00',
+      active_account: true,
+      account_type_id: 1,
+    });
+
+    accountIdFrom = accountFrom.id;
+
+    const userTestTo = await UserModel.create({
+      name: 'Teste2',
+      cpf: '22222222222',
+      birth_date: '1989-01-01 00:00:00.000+00',
+      password: 'teste123',
+    });
+
+    userTestIdTo = userTestTo.id;
+
+    const accountTo = await AccountModel.create({
+      user_id: userTestIdTo,
+      balance: '300.00',
+      daily_withdraw_limit: '500.00',
+      active_account: true,
+      account_type_id: 1,
+    });
+
+    accountIdTo = accountTo.id;
+
+    auth.token = jwt.sign({ id: userTestIdFrom }, authConfig.secret, {
       expiresIn: authConfig.expiresIn,
+    });
+  });
+
+  afterAll(async () => {
+    await AccountModel.destroy({
+      where: {
+        id: accountIdFrom,
+      },
+    });
+
+    await AccountModel.destroy({
+      where: {
+        id: accountIdTo,
+      },
+    });
+
+    await UserModel.destroy({
+      where: {
+        id: userTestIdFrom,
+      },
+    });
+
+    await UserModel.destroy({
+      where: {
+        id: userTestIdTo,
+      },
     });
   });
 
   describe('Create a new deposit transaction', () => {
     it('should return a deposit transaction register', () =>
       request(app)
-        .post(`/transactions/${accountId}/deposit`)
+        .post(`/transactions/${accountIdFrom}/deposit`)
         .auth(auth.token, { type: 'bearer' })
         .send({
           value: '100.00',
@@ -58,7 +122,7 @@ describe('Transaction routes', () => {
   describe('Create a new withdram transaction', () => {
     it('should return a withdraw transaction register', () =>
       request(app)
-        .post(`/transactions/${accountId}/withdraw`)
+        .post(`/transactions/${accountIdFrom}/withdraw`)
         .auth(auth.token, { type: 'bearer' })
         .send({
           value: '100.00',
@@ -70,7 +134,7 @@ describe('Transaction routes', () => {
 
     it('should return an error if balance is not enough', () =>
       request(app)
-        .post(`/transactions/${accountId}/withdraw`)
+        .post(`/transactions/${accountIdFrom}/withdraw`)
         .auth(auth.token, { type: 'bearer' })
         .send({
           value: '500.00',
@@ -86,8 +150,8 @@ describe('Transaction routes', () => {
         .post('/transactions/transfer')
         .auth(auth.token, { type: 'bearer' })
         .send({
-          fromAccountId: userId,
-          toAccountId: userIdTo,
+          fromAccountId: accountIdFrom,
+          toAccountId: accountIdTo,
           value: '100.00',
         })
         .then((response) => {
@@ -101,12 +165,27 @@ describe('Transaction routes', () => {
         .post(`/transactions/transfer`)
         .auth(auth.token, { type: 'bearer' })
         .send({
-          fromAccountId: userId,
-          toAccountId: userIdTo,
+          fromAccountId: accountIdFrom,
+          toAccountId: accountIdTo,
           value: '500.00',
         })
         .then((response) => {
           expect(response.statusCode).toBe(400);
+        }));
+  });
+
+  describe('Get a statement', () => {
+    it('should return a statement without filter', () =>
+      request(app)
+        .get(`/transactions/${accountIdFrom}/statement`)
+        .auth(auth.token, { type: 'bearer' })
+        .query({ filterType: '' })
+        .send()
+        .then((response) => {
+          expect(response.statusCode).toBe(201);
+          expect(response.body).toHaveProperty('account');
+          expect(response.body).toHaveProperty('totalTransactions');
+          expect(response.body).toHaveProperty('transactions');
         }));
   });
 });

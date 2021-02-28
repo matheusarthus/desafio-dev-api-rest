@@ -37,6 +37,7 @@ describe('Account routes', () => {
       name: 'Teste',
       cpf: '00000000000',
       birth_date: '1989-01-01 00:00:00.000+00',
+      password: 'teste123',
     });
 
     userTestId = userTest.id;
