@@ -21,7 +21,7 @@ module.exports = (
     const t = await connection.transaction();
 
     try {
-      await account.saves({ transaction: t });
+      await account.save({ transaction: t });
 
       const transaction = await TransactionModel.create(
         {
@@ -78,7 +78,6 @@ module.exports = (
     }
   },
   transfer: async ({ fromAccountId, toAccountId, value }) => {
-    console.log({ fromAccountId, toAccountId, value });
     const fromAccount = await AccountModel.findByPk(fromAccountId);
 
     if (!fromAccount) {

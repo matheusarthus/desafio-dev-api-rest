@@ -53,7 +53,6 @@ function withdrawTransaction(controller) {
 function transferTransaction(controller) {
   return async (req, res) => {
     logger.info('transferTransaction');
-    console.log(req.body);
     try {
       const transaction = await controller.transfer(req.body);
 
@@ -83,13 +82,19 @@ module.exports = (options) => {
 
   router.post(
     '/transactions/:accountId/deposit',
+    depositTransactionValidation,
     depositTransaction(controller)
   );
   router.post(
     '/transactions/:accountId/withdraw',
+    withdrawTransactionValidation,
     withdrawTransaction(controller)
   );
-  router.post('/transactions/transfer', transferTransaction(controller));
+  router.post(
+    '/transactions/transfer',
+    transferTransactionValidation,
+    transferTransaction(controller)
+  );
 
   return router;
 };
