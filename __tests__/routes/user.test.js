@@ -18,10 +18,14 @@ const userRoutes = require('../../src/routes/user');
 describe('User routes', () => {
   let app;
   const auth = {};
-  const userId = 'f109c358-8d48-4a6e-8696-a4b9f6b424cd'; // User João Alves
+  let userId; // User João Alves
 
-  beforeAll(() => {
+  beforeAll(async () => {
     app = generateMockApp(userRoutes({ controller: userController }));
+
+    const user = await UserModel.findOne({ where: { cpf: '99999999999' } });
+
+    userId = user.id;
 
     auth.token = jwt.sign({ id: userId }, authConfig.secret, {
       expiresIn: authConfig.expiresIn,

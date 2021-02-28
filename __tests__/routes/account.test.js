@@ -22,14 +22,51 @@ const accountRoutes = require('../../src/routes/account');
 describe('Account routes', () => {
   let app;
   const auth = {};
-  const userId = 'f109c358-8d48-4a6e-8696-a4b9f6b424cd'; // User João Alves
-  const accountId = 'f44051b5-096a-45c4-9904-753da71cf71d'; // User Teste`s Account
+  let userId;
+  let userTestId;
+  let accountId;
 
-  beforeAll(() => {
+  beforeAll(async () => {
     app = generateMockApp(accountRoutes({ controller: accountController }));
+
+    const user = await UserModel.findOne({ where: { cpf: '99999999999' } });
+
+    userId = user.id;
+
+    const userTest = await UserModel.create({
+      name: 'Teste',
+      cpf: '00000000000',
+      birth_date: '1989-01-01 00:00:00.000+00',
+    });
+
+    userTestId = userTest.id;
+
+    const account = await AccountModel.create({
+      user_id: userTestId,
+      balance: '300.00',
+      daily_withdraw_limit: '500.00',
+      active_account: true,
+      account_type_id: 1,
+    });
+
+    accountId = account.id;
 
     auth.token = jwt.sign({ id: userId }, authConfig.secret, {
       expiresIn: authConfig.expiresIn,
+    });
+  });
+
+  afterAll(async () => {
+    await AccountModel.destroy({
+      where: {
+        id: accountId,
+      },
+    });
+
+    await UserModel.destroy({
+      where: {
+        id: userTestId,
+      },
     });
   });
 
@@ -51,7 +88,7 @@ describe('Account routes', () => {
 
     it('should return a error with status code 400 if account already exists.', () =>
       request(app)
-        .post(`/accounts/${userId}`)
+        .post(`/accounts/${userTestId}`)
         .auth(auth.token, { type: 'bearer' })
         .send({
           balance: '300.00',
@@ -59,20 +96,9 @@ describe('Account routes', () => {
           active_account: true,
           account_type_id: 1,
         })
-        .then(() =>
-          request(app)
-            .post(`/accounts/${userId}`)
-            .auth(auth.token, { type: 'bearer' })
-            .send({
-              balance: '300.00',
-              daily_withdraw_limit: '500.00',
-              active_account: true,
-              account_type_id: 1,
-            })
-            .then((resp) => {
-              expect(resp.statusCode).toBe(400);
-            })
-        ));
+        .then((resp) => {
+          expect(resp.statusCode).toBe(400);
+        }));
   });
 
   describe('Show an account', () => {
