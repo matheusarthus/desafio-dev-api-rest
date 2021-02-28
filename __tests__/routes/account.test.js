@@ -21,6 +21,7 @@ describe('Account routes', () => {
   let app;
   const auth = {};
   const id = 'f109c358-8d48-4a6e-8696-a4b9f6b424cd';
+  let accountId;
 
   beforeAll(() => {
     app = generateMockApp(accountRoutes({ controller: accountController }));
@@ -44,6 +45,7 @@ describe('Account routes', () => {
         .then((response) => {
           expect(response.statusCode).toBe(201);
           expect(response.body).toHaveProperty('id');
+          accountId = response.body.id;
         }));
 
     it('should return a error with status code 400 if account already exists.', () =>
@@ -72,19 +74,29 @@ describe('Account routes', () => {
         ));
   });
 
-  /*   describe('Update an user', () => {
-    it('should return an updated field', () =>
+  describe('Show an account', () => {
+    it('should return a specific account', () =>
       request(app)
-        .put('/users')
+        .get(`/accounts/${accountId}`)
+        .auth(auth.token, { type: 'bearer' })
+        .send()
+        .then((response) => {
+          expect(response.statusCode).toBe(201);
+          expect(response.body.id).toBe(accountId);
+        }));
+  });
+
+  describe('Update an account', () => {
+    it('should return an account with the active_account field false', () =>
+      request(app)
+        .put(`/accounts/${accountId}`)
         .auth(auth.token, { type: 'bearer' })
         .send({
-          name: 'João Alves Souza',
-          cpf: '22222222222',
+          active_account: false,
         })
         .then((response) => {
           expect(response.statusCode).toBe(201);
-          expect(response.body.name).toBe('João Alves Souza');
-          expect(response.body.cpf).toBe('22222222222');
+          expect(response.body.active_account).toBe(false);
         }));
-  }); */
+  });
 });
