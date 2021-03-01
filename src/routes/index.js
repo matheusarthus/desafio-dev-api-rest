@@ -1,3 +1,7 @@
+const swaggerUi = require('swagger-ui-express');
+
+const swaggerDocument = require('../../swagger.json');
+
 const userRoutes = require('./user');
 const authRoutes = require('./auth');
 const accountRoutes = require('./account');
@@ -31,6 +35,8 @@ const transactionController = require('../app/controllers/TransactionController'
 );
 
 module.exports = (app) => {
+  app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
   app.use('/', userRoutes({ controller: userController }));
   app.use('/', authRoutes({ controller: authController }));
 

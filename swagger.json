@@ -1,0 +1,1058 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Dock Test",
+    "description": "API for bank transactions",
+    "contact": {
+      "email": "matheus.arthus@gmail.com"
+    },
+    "version": "Pre Alpha"
+  },
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Endpoints related to Authentication"
+    },
+    {
+      "name": "User",
+      "description": "Endpoints related to Users"
+    },
+    {
+      "name": "Account",
+      "description": "Endpoints related to Accounts"
+    },
+    {
+      "name": "Transaction",
+      "description": "Endpoints related to Transactions"
+    }
+  ],
+  "paths": {
+    "/auth": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Get a token for a authorized user",
+        "requestBody": {
+          "description": "The token to be gerated",
+          "content": {
+            "application/json": {
+              "example": {
+                "name": "João Alves",
+                "cpf": "99999999999",
+                "password": "123456"
+              },
+              "schema": {
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "cpf": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "New session created successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "user": {
+                    "id": "ae990c05-9c66-492a-9c82-a2db85122c55",
+                    "name": "João Alves"
+                  },
+                  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFlOTkwYzA1LTljNjYtNDkyYS05YzgyLWEyZGI4NTEyMmM1NSIsImlhdCI6MTYxNDU0NDY1MywiZXhwIjoxNjE1MTQ5NDUzfQ.nRspgRdY4buQ0Jduhb7o5sUqJCKKhnCqs2FRmTiTJYM"
+                },
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/users": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Create a new user",
+        "requestBody": {
+          "description": "The user to be created",
+          "content": {
+            "application/json": {
+              "example": {
+                "name": "Matheus Arthus",
+                "cpf": "41623434890",
+                "birth_date": "1992-03-12 00:00:00.000+00",
+                "password": "123456"
+              },
+              "schema": {
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "cpf": {
+                    "type": "string"
+                  },
+                  "birth_date": {
+                    "type": "date"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created successfully.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "dad27de6-5b62-4d41-a93f-f64485fd6d71",
+                  "name": "Matheus Arthus",
+                  "cpf": "41623434890"
+                },
+                "schema": {
+                  "properties": {
+                    "id": {
+                      "type": "uuid"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "cpf": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Update an user",
+        "requestBody": {
+          "description": "The user to be updated",
+          "content": {
+            "application/json": {
+              "example": {
+                "name": "Matheus Arthus",
+                "cpf": "41623434890",
+                "oldPassword": "123456",
+                "password": "abcdef",
+                "confirmPassword": "abcdef"
+              },
+              "schema": {
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "cpf": {
+                    "type": "string"
+                  },
+                  "oldPassword": {
+                    "type": "date"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "confirmPassword": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "User updated successfully.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "dad27de6-5b62-4d41-a93f-f64485fd6d71",
+                  "name": "Matheus Arthus",
+                  "cpf": "41623434890"
+                },
+                "schema": {
+                  "properties": {
+                    "id": {
+                      "type": "uuid"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "cpf": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/accounts/{accountId}": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get a specific account",
+        "responses": {
+          "201": {
+            "description": "Account displayed successfully.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "125a5abe-0b31-4f4a-b2af-416f50ce0a01",
+                  "user_id": "ae990c05-9c66-492a-9c82-a2db85122c55",
+                  "balance": "380.00",
+                  "daily_withdraw_limit": "500.00",
+                  "active_account": true,
+                  "account_type_id": 1,
+                  "createdAt": "2021-02-28T19:23:52.922Z",
+                  "updatedAt": "2021-02-28T20:37:41.375Z",
+                  "user": {
+                    "id": "ae990c05-9c66-492a-9c82-a2db85122c55",
+                    "name": "João Alves",
+                    "cpf": "99999999999"
+                  },
+                  "accountType": {
+                    "type": "individual account"
+                  }
+                },
+                "schema": {
+                  "properties": {
+                    "id": {
+                      "type": "uuid"
+                    },
+                    "user_id": {
+                      "type": "uuid"
+                    },
+                    "balance": {
+                      "type": "string"
+                    },
+                    "daily_withdraw_limit": {
+                      "type": "string"
+                    },
+                    "active_account": {
+                      "type": "boolean"
+                    },
+                    "account_type_id": {
+                      "type": "integer"
+                    },
+                    "updatedAt": {
+                      "type": "date"
+                    },
+                    "createdAt": {
+                      "type": "date"
+                    },
+                    "user": {
+                      "id": {
+                        "type": "uuid"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "cpf": {
+                        "type": "string"
+                      }
+                    },
+                    "accountType": {
+                      "type": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Account"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Update a specific account",
+        "requestBody": {
+          "description": "The account to be updated",
+          "content": {
+            "application/json": {
+              "example": {
+                "active_account": false
+              },
+              "schema": {
+                "properties": {
+                  "active_account": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Account updated successfully.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "125a5abe-0b31-4f4a-b2af-416f50ce0a01",
+                  "user_id": "ae990c05-9c66-492a-9c82-a2db85122c55",
+                  "balance": "380.00",
+                  "daily_withdraw_limit": "500.00",
+                  "active_account": true,
+                  "account_type_id": 1,
+                  "createdAt": "2021-02-28T19:23:52.922Z",
+                  "updatedAt": "2021-02-28T20:37:41.375Z"
+                },
+                "schema": {
+                  "properties": {
+                    "id": {
+                      "type": "uuid"
+                    },
+                    "user_id": {
+                      "type": "uuid"
+                    },
+                    "balance": {
+                      "type": "string"
+                    },
+                    "daily_withdraw_limit": {
+                      "type": "string"
+                    },
+                    "active_account": {
+                      "type": "boolean"
+                    },
+                    "account_type_id": {
+                      "type": "integer"
+                    },
+                    "updatedAt": {
+                      "type": "date"
+                    },
+                    "createdAt": {
+                      "type": "date"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/accounts/{userId}": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Create a new account",
+        "requestBody": {
+          "description": "The account to be created",
+          "content": {
+            "application/json": {
+              "example": {
+                "balance": "300.00",
+                "daily_withdraw_limit": "500.00",
+                "active_account": true,
+                "account_type_id": 1
+              },
+              "schema": {
+                "properties": {
+                  "balance": {
+                    "type": "string"
+                  },
+                  "daily_withdraw_limit": {
+                    "type": "string"
+                  },
+                  "active_account": {
+                    "type": "boolean"
+                  },
+                  "account_type_id": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Account created successfully.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "125a5abe-0b31-4f4a-b2af-416f50ce0a01",
+                  "user_id": "ae990c05-9c66-492a-9c82-a2db85122c55",
+                  "balance": "300.00",
+                  "daily_withdraw_limit": "500.00",
+                  "active_account": true,
+                  "account_type_id": 1,
+                  "updatedAt": "2021-02-28T19:23:52.922Z",
+                  "createdAt": "2021-02-28T19:23:52.922Z"
+                },
+                "schema": {
+                  "properties": {
+                    "id": {
+                      "type": "uuid"
+                    },
+                    "user_id": {
+                      "type": "uuid"
+                    },
+                    "balance": {
+                      "type": "string"
+                    },
+                    "daily_withdraw_limit": {
+                      "type": "string"
+                    },
+                    "active_account": {
+                      "type": "boolean"
+                    },
+                    "account_type_id": {
+                      "type": "integer"
+                    },
+                    "updatedAt": {
+                      "type": "date"
+                    },
+                    "createdAt": {
+                      "type": "date"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/transactions/{accountId}/statement": {
+      "get": {
+        "tags": [
+          "Transaction"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "filterType",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "If the value of this param is 'period' the route performs a search by period"
+          },
+          {
+            "in": "query",
+            "name": "startDate",
+            "schema": {
+              "type": "date"
+            },
+            "required": false,
+            "description": "Start date for the filter by period"
+          },
+          {
+            "in": "query",
+            "name": "endDate",
+            "schema": {
+              "type": "date"
+            },
+            "required": false,
+            "description": "End date for the filter by period"
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Create a new statement of transactions",
+        "responses": {
+          "201": {
+            "description": "Transfer transaction created successfully.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "account": {
+                    "id": "125a5abe-0b31-4f4a-b2af-416f50ce0a01",
+                    "user_id": "ae990c05-9c66-492a-9c82-a2db85122c55",
+                    "balance": "350.00",
+                    "daily_withdraw_limit": "500.00",
+                    "active_account": true,
+                    "account_type_id": 1,
+                    "createdAt": "2021-02-28T19:23:52.922Z",
+                    "updatedAt": "2021-03-01T00:38:17.021Z",
+                    "user": {
+                      "name": "João Alves",
+                      "cpf": "99999999999"
+                    }
+                  },
+                  "period": {
+                    "start": "Sat Feb 27 2021 21:00:48 GMT-0300 (Brasilia Standard Time)",
+                    "end": "Sun Feb 28 2021 15:14:48 GMT-0300 (Brasilia Standard Time)"
+                  },
+                  "totalTransactions": 5,
+                  "transactions": [
+                    {
+                      "id": "75b9b8e8-0d62-4acc-a5aa-c3d51932f5ac",
+                      "account_id": "125a5abe-0b31-4f4a-b2af-416f50ce0a01",
+                      "value": "10.00",
+                      "transaction_type_id": 1,
+                      "transfer_id": null,
+                      "createdAt": "2021-02-28T19:31:46.024Z",
+                      "updatedAt": "2021-02-28T19:31:46.024Z",
+                      "transactionType": {
+                        "type": "deposit"
+                      },
+                      "transfer": null
+                    },
+                    {
+                      "id": "5c5805cb-e192-4392-9da3-2ef9733ea08d",
+                      "account_id": "125a5abe-0b31-4f4a-b2af-416f50ce0a01",
+                      "value": "10.00",
+                      "transaction_type_id": 1,
+                      "transfer_id": null,
+                      "createdAt": "2021-02-28T20:37:40.752Z",
+                      "updatedAt": "2021-02-28T20:37:40.752Z",
+                      "transactionType": {
+                        "type": "deposit"
+                      },
+                      "transfer": null
+                    },
+                    {
+                      "id": "f4f5921d-e4f6-41ef-a171-a81befdd2fb0",
+                      "account_id": "125a5abe-0b31-4f4a-b2af-416f50ce0a01",
+                      "value": "10.00",
+                      "transaction_type_id": 1,
+                      "transfer_id": null,
+                      "createdAt": "2021-02-28T20:37:41.379Z",
+                      "updatedAt": "2021-02-28T20:37:41.379Z",
+                      "transactionType": {
+                        "type": "deposit"
+                      },
+                      "transfer": null
+                    },
+                    {
+                      "id": "e2c8d3f6-0aab-4d54-9e8e-b88d6af22f6a",
+                      "account_id": "125a5abe-0b31-4f4a-b2af-416f50ce0a01",
+                      "value": "10.00",
+                      "transaction_type_id": 3,
+                      "transfer_id": "9ce047d8-f6e7-43ad-8786-bc7de8d88f6b",
+                      "createdAt": "2021-03-01T00:38:14.341Z",
+                      "updatedAt": "2021-03-01T00:38:14.341Z",
+                      "transactionType": {
+                        "type": "transfer"
+                      },
+                      "transfer": {
+                        "account_id_from": "125a5abe-0b31-4f4a-b2af-416f50ce0a01",
+                        "account_id_to": "ee31a9c5-b732-410b-b70f-66746e0aadfa",
+                        "account_from": {
+                          "id": "125a5abe-0b31-4f4a-b2af-416f50ce0a01",
+                          "user": {
+                            "name": "João Alves",
+                            "cpf": "99999999999"
+                          }
+                        },
+                        "account_to": {
+                          "id": "ee31a9c5-b732-410b-b70f-66746e0aadfa",
+                          "user": {
+                            "name": "Matheus Arthus",
+                            "cpf": "41623434890"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "id": "f8146d11-8146-4b17-a7dd-763b723c4cd5",
+                      "account_id": "125a5abe-0b31-4f4a-b2af-416f50ce0a01",
+                      "value": "10.00",
+                      "transaction_type_id": 3,
+                      "transfer_id": "da2a15cb-4e0f-472d-9993-dda3fe46f5bc",
+                      "createdAt": "2021-03-01T00:38:15.642Z",
+                      "updatedAt": "2021-03-01T00:38:15.642Z",
+                      "transactionType": {
+                        "type": "transfer"
+                      },
+                      "transfer": {
+                        "account_id_from": "125a5abe-0b31-4f4a-b2af-416f50ce0a01",
+                        "account_id_to": "ee31a9c5-b732-410b-b70f-66746e0aadfa",
+                        "account_from": {
+                          "id": "125a5abe-0b31-4f4a-b2af-416f50ce0a01",
+                          "user": {
+                            "name": "João Alves",
+                            "cpf": "99999999999"
+                          }
+                        },
+                        "account_to": {
+                          "id": "ee31a9c5-b732-410b-b70f-66746e0aadfa",
+                          "user": {
+                            "name": "Matheus Arthus",
+                            "cpf": "41623434890"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "schema": {}
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/transactions/{accountId}/deposit": {
+      "post": {
+        "tags": [
+          "Transaction"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Create a new deposit transaction",
+        "requestBody": {
+          "description": "The deposit transaction to be created",
+          "content": {
+            "application/json": {
+              "example": {
+                "value": "10.00"
+              },
+              "schema": {
+                "value": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Deposit transaction created successfully.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "f4f5921d-e4f6-41ef-a171-a81befdd2fb0",
+                  "account_id": "125a5abe-0b31-4f4a-b2af-416f50ce0a01",
+                  "value": "10.00",
+                  "transaction_type_id": 1,
+                  "updatedAt": "2021-02-28T20:37:41.379Z",
+                  "createdAt": "2021-02-28T20:37:41.379Z",
+                  "transfer_id": null
+                },
+                "schema": {
+                  "properties": {
+                    "id": {
+                      "type": "uuid"
+                    },
+                    "account_id": {
+                      "type": "uuid"
+                    },
+                    "value": {
+                      "type": "string"
+                    },
+                    "transaction_type_id": {
+                      "type": "integer"
+                    },
+                    "transfer_id": {
+                      "type": "uuid"
+                    },
+                    "updatedAt": {
+                      "type": "date"
+                    },
+                    "createdAt": {
+                      "type": "date"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/transactions/{accountId}/withdraw": {
+      "post": {
+        "tags": [
+          "Transaction"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Create a new withdraw transaction",
+        "requestBody": {
+          "description": "The withdraw transaction to be created",
+          "content": {
+            "application/json": {
+              "example": {
+                "value": "10.00"
+              },
+              "schema": {
+                "value": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Deposit transaction created successfully.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "f4f5921d-e4f6-41ef-a171-a81befdd2fb0",
+                  "account_id": "125a5abe-0b31-4f4a-b2af-416f50ce0a01",
+                  "value": "10.00",
+                  "transaction_type_id": 2,
+                  "updatedAt": "2021-02-28T20:37:41.379Z",
+                  "createdAt": "2021-02-28T20:37:41.379Z",
+                  "transfer_id": null
+                },
+                "schema": {
+                  "properties": {
+                    "id": {
+                      "type": "uuid"
+                    },
+                    "account_id": {
+                      "type": "uuid"
+                    },
+                    "value": {
+                      "type": "string"
+                    },
+                    "transaction_type_id": {
+                      "type": "integer"
+                    },
+                    "transfer_id": {
+                      "type": "uuid"
+                    },
+                    "updatedAt": {
+                      "type": "date"
+                    },
+                    "createdAt": {
+                      "type": "date"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/transactions/transfer": {
+      "post": {
+        "tags": [
+          "Transaction"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Create a new transfer transaction",
+        "requestBody": {
+          "description": "The transfer transaction to be created",
+          "content": {
+            "application/json": {
+              "example": {
+                "fromAccountId": "125a5abe-0b31-4f4a-b2af-416f50ce0a01",
+                "toAccountId": "ee31a9c5-b732-410b-b70f-66746e0aadfa",
+                "value": "10.00"
+              },
+              "schema": {
+                "fromAccountId": {
+                  "type": "uuid"
+                },
+                "toAccountId": {
+                  "type": "uuid"
+                },
+                "value": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Transfer transaction created successfully.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "from": {
+                    "id": "dc45e5d1-fb1e-4c1c-a0e7-711e31a3e8cf",
+                    "account_id": "125a5abe-0b31-4f4a-b2af-416f50ce0a01",
+                    "value": "10.00",
+                    "transaction_type_id": 3,
+                    "transfer_id": "70f14186-4c1f-409a-9263-96baceaf6a9f",
+                    "updatedAt": "2021-03-01T00:38:17.032Z",
+                    "createdAt": "2021-03-01T00:38:17.032Z"
+                  },
+                  "to": {
+                    "id": "c6d207a1-4536-413f-b498-cfa7e25eb472",
+                    "account_id": "ee31a9c5-b732-410b-b70f-66746e0aadfa",
+                    "value": "10.00",
+                    "transaction_type_id": 3,
+                    "transfer_id": "70f14186-4c1f-409a-9263-96baceaf6a9f",
+                    "updatedAt": "2021-03-01T00:38:17.036Z",
+                    "createdAt": "2021-03-01T00:38:17.036Z"
+                  }
+                },
+                "schema": {
+                  "properties": {
+                    "from": {
+                      "type": "object"
+                    },
+                    "to": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Error": {
+        "properties": {
+          "statusCode": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          },
+          "error": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "responses": {
+      "NotFound": {
+        "description": "The specified resource was not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Forbidden",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "BadRequest": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "UnprocessableEntity": {
+        "description": "Unprocessable Entity: this means that the request is syntactically correct, but didn't pass business rules validation",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      }
+    }
+  }
+}
